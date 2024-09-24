@@ -106,40 +106,26 @@ public class UserEFController : ControllerBase
     }
 
     // Endpoints para UserJobInfo
-    [HttpGet("GetUserJobInfo")]
-    public IEnumerable<UserJobInfo> GetUserJobInfos()
-    {
-        IEnumerable<UserJobInfo> userJobInfos = _entityFramework
-            .UserJobInfo.ToList<UserJobInfo>();
-        return userJobInfos;
-    }
 
-    [HttpGet("GetSingleUserJobInfo/{userId}")]
-    public UserJobInfo GetSingleUserJobInfo(int userId)
+    [HttpGet("UserJobInfo/{userId}")]
+    public IEnumerable<UserJobInfo> GetUserJobInfoEF(int userId)
     {
-        UserJobInfo? userJobInfoDb = _entityFramework.UserJobInfo
+        return _entityFramework.UserJobInfo
             .Where(u => u.UserId == userId)
-            .FirstOrDefault();
-        
-        if(userJobInfoDb != null)
-        {
-            return userJobInfoDb;
-        }
-
-        throw new Exception("Failed to Get UserJobInfo");
+            .ToList();
     }
 
-    [HttpPut("EditUserJobInfo")]
-    public IActionResult EditUserJobInfo(UserJobInfo userJobInfo)
+    [HttpPut("UserJobInfo")]
+    public IActionResult PutUserJobInfoEF(UserJobInfo userForUpdate)
     {
-        UserJobInfo? userJobInfoDb = _entityFramework.UserJobInfo
-            .Where(u => u.UserId == userJobInfo.UserId)
+        UserJobInfo? userToUpdate = _entityFramework.UserJobInfo
+            .Where(u => u.UserId == userForUpdate.UserId)
             .FirstOrDefault();
         
-        if(userJobInfoDb != null)
+        if(userToUpdate != null)
         {
-            userJobInfoDb.JobTitle = userJobInfo.JobTitle;
-            userJobInfoDb.Department = userJobInfo.Department;
+            userToUpdate.JobTitle = userForUpdate.JobTitle;
+            userToUpdate.Department = userForUpdate.Department;
             if(_entityFramework.SaveChanges() > 0)
             {
                 return Ok();
@@ -151,12 +137,10 @@ public class UserEFController : ControllerBase
         throw new Exception("Failed to Get UserJobInfo");
     }
 
-    [HttpPost("AddUserJobInfo")]
-    public IActionResult AddUserJobInfo(UserJobInfoDto userJobInfo)
+    [HttpPost("UserJobInfo")]
+    public IActionResult PostUserJobInfoEF(UserJobInfo userToAdd)
     {
-        UserJobInfo userJobInfoDb = _mapper.Map<UserJobInfo>(userJobInfo);
-
-        _entityFramework.Add(userJobInfoDb);
+        _entityFramework.UserJobInfo.Add(userToAdd);
         if(_entityFramework.SaveChanges() > 0)
         {
             return Ok();
@@ -165,16 +149,16 @@ public class UserEFController : ControllerBase
         throw new Exception("Failed to Add UserJobInfo");
     }
 
-    [HttpDelete("DeleteUserJobInfo")]
-    public IActionResult DeleteUserJobInfo(int userId)
+    [HttpDelete("UserJobInfo/{userId}")]
+    public IActionResult DeleteUserJobInfoEF(int userId)
     {
-        UserJobInfo? userJobInfoDb = _entityFramework.UserJobInfo
+        UserJobInfo? userToDelete = _entityFramework.UserJobInfo
             .Where(u => u.UserId == userId)
             .FirstOrDefault();
         
-        if(userJobInfoDb != null)
+        if(userToDelete != null)
         {
-            _entityFramework.Remove(userJobInfoDb);
+            _entityFramework.UserJobInfo.Remove(userToDelete);
             if(_entityFramework.SaveChanges() > 0)
             {
                 return Ok();
@@ -186,38 +170,25 @@ public class UserEFController : ControllerBase
     }
 
     // Endpoints para UserSalary
-    [HttpGet("GetUserSalary")]
-    public IEnumerable<UserSalary> GetUserSalaries()
-    {
-        IEnumerable<UserSalary> userSalaries = _entityFramework.UserSalary.ToList<UserSalary>();
-        return userSalaries;
-    }
 
-    [HttpGet("GetSingleUserSalary/{userId}")]
-    public UserSalary GetUserSalary(int userId)
+    [HttpGet("UserSalary/{userId}")]
+    public IEnumerable<UserSalary> GetUserSalaryEF(int userId)
     {
-        UserSalary? userSalaryDb = _entityFramework.UserSalary
+        return _entityFramework.UserSalary
             .Where(u => u.UserId == userId)
-            .FirstOrDefault();
-        
-        if(userSalaryDb != null)
-        {
-            return userSalaryDb;
-        }
-
-        throw new Exception("Failed to Get UserSalary");
+            .ToList();
     }
 
     [HttpPut("EditUserSalary")]
-    public IActionResult EditUserSalary(UserSalary userSalary)
+    public IActionResult PutUserSalaryEF(UserSalary userForUpdate)
     {
-        UserSalary? userSalaryDb = _entityFramework.UserSalary
-            .Where(u => u.UserId == userSalary.UserId)
-            .FirstOrDefault<UserSalary>();
+        UserSalary? userToUpdate = _entityFramework.UserSalary
+            .Where(u => u.UserId == userForUpdate.UserId)
+            .FirstOrDefault();
         
-        if(userSalaryDb != null)
+        if(userToUpdate != null)
         {
-            userSalaryDb.Salary = userSalary.Salary;
+            userToUpdate.Salary = userForUpdate.Salary;
             if(_entityFramework.SaveChanges() > 0)
             {
                 return Ok();
@@ -229,16 +200,36 @@ public class UserEFController : ControllerBase
         throw new Exception("Failed to Get UserSalary");
     }
 
-    [HttpPost("AddUserSalary")]
-    public IActionResult AddUserSalary(UserSalaryDto user)
+    [HttpPost("UserSalary")]
+    public IActionResult PostUserSalaryEF(UserSalary userForInsert)
     {
-        UserSalary userSalaryDb = _mapper.Map<UserSalary>(user);
-        _entityFramework.Add(userSalaryDb);
+        _entityFramework.UserSalary.Add(userForInsert);
         if(_entityFramework.SaveChanges() > 0)
         {
             return Ok();
         }
 
         throw new Exception("Failed to Add UserSalary");
+    }
+
+    [HttpDelete("UserSalary/{userId}")]
+    public IActionResult DeleteUserSalaryEF(int userId)
+    {
+        UserSalary? userToDelete = _entityFramework.UserSalary
+            .Where(u => u.UserId == userId)
+            .FirstOrDefault();
+        
+        if(userToDelete != null)
+        {
+            _entityFramework.UserSalary.Remove(userToDelete);
+            if(_entityFramework.SaveChanges() > 0)
+            {
+                return Ok();
+            }
+
+            throw new Exception("Failed to Remove UserSalary");
+        }
+
+        throw new Exception("Failed to Get UserSalary");
     }
 }
