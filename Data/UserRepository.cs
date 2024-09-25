@@ -9,7 +9,7 @@ namespace DotnetAPI.Data
         {
             _entityFramework = new DataContextEF(config);
         }
-
+1
         public bool SaveChanges()
         {
             return _entityFramework.SaveChanges() > 0;
