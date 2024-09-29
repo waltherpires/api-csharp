@@ -73,7 +73,7 @@ namespace DotnetAPI.Controllers
 
             throw new Exception("Failed to upsert Post");
         }
-
+        // Delete
         [HttpDelete("Post/{postId}")]
         public IActionResult DeletePost(int postId)
         {
